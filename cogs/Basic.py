@@ -15,7 +15,7 @@ class Basic(commands.Cog):
         await ctx.send(f'{round(self.client.latency * 1000)}ms')
         
     @commands.command(aliases=['8ball', 'eight ball', '8 ball'])
-    async def eightball(self, ctx):
+    async def eightball(self, ctx, *, response):
         with open("outputs/8ball.txt", "r") as f:
             random_responses = f.readlines()
             response = random.choice(random_responses)
