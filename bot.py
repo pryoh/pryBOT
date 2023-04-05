@@ -17,8 +17,14 @@ bot_status = cycle(['[REDACTED]', '[ERROR]'])
 
 @client.event
 async def on_ready():
+    await client.tree.sync()
     print('pryBOT is connected')
     change_status.start()
+    
+@client.tree.command(name="pingg", description="test")
+async def pingg(interaction: discord.Interaction):
+    bot_latency = round(client.latency * 1000)
+    await interaction.response.send_message(f"pongg {bot_latency}ms")
     
 @client.event
 async def on_guild_join(guild):
@@ -29,6 +35,14 @@ async def on_guild_join(guild):
     
     with open("prefixes.json", "w") as f:
         json.dump(prefix, f, indent=4)
+    
+    with open("cogs/outputs/mute.json", "r") as f:
+        mute_role = json.load(f)
+        
+        mute_role[str(guild.id)] = None
+    
+    with open("cogs/outputs/mute.json", "w") as f:
+        json.dump(mute_role, f, indent=4)
         
 @client.event
 async def on_guild_remove(guild):
@@ -39,6 +53,14 @@ async def on_guild_remove(guild):
     
     with open("prefixes.json", "w") as f:
         json.dump(prefix, f, indent=4)
+    
+    with open("cogs/outputs/mute.json", "r") as f:
+        mute_role = json.load(f)
+        
+        mute_role.pop[str(guild.id)] = None
+    
+    with open("cogs/outputs/mute.json", "w") as f:
+        json.dump(mute_role, f, indent=4)
 
 @tasks.loop(seconds=10)
 async def change_status():

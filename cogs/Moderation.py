@@ -1,5 +1,6 @@
 import discord 
 from discord.ext import commands
+import json
 
 class Moderation(commands.Cog):
     def __init__(self, client):
@@ -9,8 +10,50 @@ class Moderation(commands.Cog):
         print('Moderation is ready')
         
         
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def setmuterole(self, ctx, role: discord.Role):
+        with open("cogs/outputs/mute.json", "r") as f:
+            mute_role = json.load(f)
+            
+            mute_role[str(ctx.guild.id)] = role.name
+            
+        with open("cogs/outputs/mute.json", "w") as f:
+            json.dump(mute_role, f, indent=4)
+            
+        conf_embed = discord.Embed(title="Success!", color=discord.Color.green())
+        conf_embed = discord.Embed(description=f"Set the mute role to {role.mention}", color=discord.Color.green())
         
+        await ctx.send(embed=conf_embed)
+        
+    @commands.command()
+    @commands.has_permissions(manage_roles=True)
+    async def mute(self, ctx, member: discord.Member):
+        with open("cogs/outputs/mute.json", "r") as f:
+            role = json.load(f)
 
+            mute_role=discord.utils.get(ctx.guild.roles, name=role[str(ctx.guild.id)])
+            
+        await member.add_roles(mute_role)
+        
+        conf_embed = discord.Embed(title="Success!", color=discord.Color.green())
+        conf_embed.add_field(name="Muted", value=f"{member.mention} has been muted.", inline=False)
+        await ctx.send(embed=conf_embed)
+        
+    @commands.command()
+    @commands.has_permissions(manage_roles=True)
+    async def unmute(self, ctx, member: discord.Member):
+        with open("cogs/outputs/mute.json", "r") as f:
+            role = json.load(f)
+
+            mute_role=discord.utils.get(ctx.guild.roles, name=role[str(ctx.guild.id)])
+                
+        await member.remove_roles(mute_role)
+            
+        conf_embed = discord.Embed(title="Success!", color=discord.Color.green())
+        conf_embed.add_field(name="Unmuted", value=f"{member.mention} has been unmuted.", inline=False)
+        await ctx.send(embed=conf_embed)
+        
     @commands.command()
     @commands.has_permissions(manage_messages=True)
     async def clear(self, ctx, count: int):
