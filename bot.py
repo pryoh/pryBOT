@@ -5,27 +5,63 @@ import os
 import asyncio
 import json
 
-client = commands.Bot(command_prefix = '=', intents=discord.Intents.all()) #command to set bot prefix
+def get_server_prefix(client, message):
+    with open("prefixes.json", "r") as f:
+        prefix = json.load(f)
+        
+    return prefix[str(message.guild.id)]
 
-@client.event ##### command to check if bot is connected to Discord
-async def on_ready():
-    print("pryBOT is connected to Discord")
-    change_status.start()
-    
-    
+client = commands.Bot(command_prefix = get_server_prefix, intents=discord.Intents.all())
 
 bot_status = cycle(['[REDACTED]', '[ERROR]'])
+
+@client.event
+async def on_ready():
+    print('pryBOT is connected')
+    change_status.start()
+    
+@client.event
+async def on_guild_join(guild):
+    with open("prefixes.json", "r") as f:
+        prefix = json.load(f)
+        
+    prefix[str(guild.id)] = ">"
+    
+    with open("prefixes.json", "w") as f:
+        json.dump(prefix, f, indent=4)
+        
+@client.event
+async def on_guild_remove(guild):
+    with open("prefixes.json", "r") as f:
+        prefix = json.load(f)
+        
+    prefix.pop(str(guild.id))
+    
+    with open("prefixes.json", "w") as f:
+        json.dump(prefix, f, indent=4)
 
 @tasks.loop(seconds=10)
 async def change_status():
     await client.change_presence(activity=discord.Game(next(bot_status)))
     
+@client.command()
+async def setprefix(ctx, *, newprefix: str):
+    with open("prefixes.json", "r") as f:
+        prefix = json.load(f)
         
+    prefix[str(ctx.guild.id)] = newprefix
+    
+    with open("prefixes.json", "w") as f:
+        json.dump(prefix, f, indent=4)
+    
+        
+        
+
 async def load():
-    for filename in os.listdir('./cogs'):
-        if filename.endswith('.py'):
-            await client.load_extension(f'cogs.{filename[:-3]}')
-        
+    for filename in os.listdir("./cogs"):
+        if filename.endswith(".py"):
+            await client.load_extension(f"cogs.{filename[:-3]}")
+            print(f"{filename[:-3]} is loaded ")
 
 async def main():
     async with client:
