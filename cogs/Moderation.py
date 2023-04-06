@@ -60,7 +60,25 @@ class Moderation(commands.Cog):
         await ctx.channel.purge(limit=count)
         await ctx.send(f"Purged {count} messages.")
         
-        
+    @clear.error
+    async def _error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Error: please provide an integer value to clear messages.")
+            
+    @clear.error
+    async def kick_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Error: must provide a user ID or @ mention.")
+            
+    @clear.error
+    async def ban_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Error: must provide a user ID or @ mention.")
+    
+    @clear.error
+    async def unban_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Error: must provide a user ID.")
         
         
     @commands.command()

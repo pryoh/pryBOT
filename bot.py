@@ -27,6 +27,11 @@ async def pingg(interaction: discord.Interaction):
     await interaction.response.send_message(f"pongg {bot_latency}ms")
     
 @client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send("You do not have the required permissions to run this command.")
+    
+@client.event
 async def on_guild_join(guild):
     with open("prefixes.json", "r") as f:
         prefix = json.load(f)
