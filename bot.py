@@ -18,13 +18,13 @@ bot_status = cycle(['[REDACTED]', '[ERROR]'])
 @client.event
 async def on_ready():
     await client.tree.sync()
-    print('pryBOT is connected')
+    print('\npryBOT connected successfully\n')
     change_status.start()
     
-@client.tree.command(name="pingg", description="test")
+@client.tree.command(name="ping", description="test")
 async def pingg(interaction: discord.Interaction):
     bot_latency = round(client.latency * 1000)
-    await interaction.response.send_message(f"pongg {bot_latency}ms")
+    await interaction.response.send_message(f"{bot_latency}ms")
     
 @client.event
 async def on_command_error(ctx, error):
@@ -88,7 +88,8 @@ async def load():
     for filename in os.listdir("./cogs"):
         if filename.endswith(".py"):
             await client.load_extension(f"cogs.{filename[:-3]}")
-            print(f"{filename[:-3]} is loaded ")
+            print(f"{filename[:-3]} is loaded")
+    print("\nAll cogs loaded successfully\n")
 
 async def main():
     async with client:

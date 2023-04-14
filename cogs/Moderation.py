@@ -7,18 +7,18 @@ class Moderation(commands.Cog):
         self.client = client
     @commands.Cog.listener()
     async def on_ready(self):
-        print('Moderation is ready')
+        print('Moderation is connected to Discord')
         
         
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def setmuterole(self, ctx, role: discord.Role):
-        with open("cogs/outputs/mute.json", "r") as f:
+        with open("cogs/json/mute.json", "r") as f:
             mute_role = json.load(f)
             
             mute_role[str(ctx.guild.id)] = role.name
             
-        with open("cogs/outputs/mute.json", "w") as f:
+        with open("cogs/json/mute.json", "w") as f:
             json.dump(mute_role, f, indent=4)
             
         conf_embed = discord.Embed(title="Success!", color=discord.Color.green())
@@ -29,7 +29,7 @@ class Moderation(commands.Cog):
     @commands.command()
     @commands.has_permissions(manage_roles=True)
     async def mute(self, ctx, member: discord.Member):
-        with open("cogs/outputs/mute.json", "r") as f:
+        with open("cogs/json/mute.json", "r") as f:
             role = json.load(f)
 
             mute_role=discord.utils.get(ctx.guild.roles, name=role[str(ctx.guild.id)])
@@ -43,7 +43,7 @@ class Moderation(commands.Cog):
     @commands.command()
     @commands.has_permissions(manage_roles=True)
     async def unmute(self, ctx, member: discord.Member):
-        with open("cogs/outputs/mute.json", "r") as f:
+        with open("cogs/json/mute.json", "r") as f:
             role = json.load(f)
 
             mute_role=discord.utils.get(ctx.guild.roles, name=role[str(ctx.guild.id)])

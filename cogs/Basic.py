@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 import random
 
 class Basic(commands.Cog):
@@ -16,7 +16,7 @@ class Basic(commands.Cog):
         
     @commands.command(aliases=['8ball', 'eight ball', '8 ball'])
     async def eightball(self, ctx, *, response):
-        with open("outputs/8ball.txt", "r") as f:
+        with open("txt/8ball.txt", "r") as f:
             random_responses = f.readlines()
             response = random.choice(random_responses)
             
