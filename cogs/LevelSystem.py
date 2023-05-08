@@ -76,4 +76,4 @@ class LevelSystem(commands.Cog):
         await ctx.send(embed=level_card)
         
 async def setup(client):
-    client.add_cog(LevelSystem(client))
+   await client.add_cog(LevelSystem(client))

@@ -7,7 +7,7 @@ class Moderation(commands.Cog):
         self.client = client
     @commands.Cog.listener()
     async def on_ready(self):
-        print('Moderation is connected to Discord')
+        print('Moderation.py is connected to Discord')
         
         
     @commands.command()

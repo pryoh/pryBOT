@@ -6,7 +6,7 @@ class Embeds(commands.Cog):
         self.client = client
     @commands.Cog.listener()
     async def on_ready(self):
-        print('Embeds is connected to Discord')
+        print('Embeds.py is connected to Discord')
         
         
     @commands.command()
